@@ -7,13 +7,13 @@ use Illuminate\Http\Request;
 
 class ClientsController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Client::class, 'client');
+    }
     public function index()
     {
-        $clients = Client::all();
-
-        foreach ($clients as $client) {
-            $client->append('bookings_count');
-        }
+        $clients = auth()->user()->clients()->withCount('bookings')->get();
 
         return view('clients.index', ['clients' => $clients]);
     }
@@ -23,9 +23,9 @@ class ClientsController extends Controller
         return view('clients.create');
     }
 
-    public function show($client)
+    public function show(Client $client)
     {
-        $client = Client::where('id', $client)->with('bookings')->first();
+        $client->load('bookings');
 
         return view('clients.show', ['client' => $client]);
     }
@@ -36,17 +36,18 @@ class ClientsController extends Controller
         $client->name = $request->get('name');
         $client->email = $request->get('email');
         $client->phone = $request->get('phone');
-        $client->address = $request->get('adress');
+        $client->address = $request->get('address');
         $client->city = $request->get('city');
         $client->postcode = $request->get('postcode');
+        $client->user_id = auth()->id();
         $client->save();
 
         return $client;
     }
 
-    public function destroy($client)
+    public function destroy(Client $client)
     {
-        Client::where('id', $client)->delete();
+        $client->delete();
 
         return 'Deleted';
     }
