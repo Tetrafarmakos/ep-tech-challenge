@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Client;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreClientRequest;
 
 class ClientsController extends Controller
 {
@@ -30,15 +30,17 @@ class ClientsController extends Controller
         return view('clients.show', ['client' => $client]);
     }
 
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
+        $validated = $request->validated();
+
         $client = new Client;
-        $client->name = $request->get('name');
-        $client->email = $request->get('email');
-        $client->phone = $request->get('phone');
-        $client->address = $request->get('address');
-        $client->city = $request->get('city');
-        $client->postcode = $request->get('postcode');
+        $client->name = $validated['name'];
+        $client->email = $validated['email'] ?? null;
+        $client->phone = $validated['phone'] ?? null;
+        $client->address = $validated['address'] ?? null;
+        $client->city = $validated['city'] ?? null;
+        $client->postcode = $validated['postcode'] ?? null;
         $client->user_id = auth()->id();
         $client->save();
 

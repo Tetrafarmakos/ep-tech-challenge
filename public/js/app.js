@@ -1962,6 +1962,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ClientForm',
@@ -1974,13 +1984,23 @@ __webpack_require__.r(__webpack_exports__);
         address: '',
         city: '',
         postcode: ''
-      }
+      },
+      errors: {} // store backend validation errors
+
     };
   },
   methods: {
     storeClient: function storeClient() {
+      var _this = this;
+
+      this.errors = {}; // reset errors
+
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/clients', this.client).then(function (data) {
         window.location.href = data.data.url;
+      })["catch"](function (error) {
+        if (error.response && error.response.status === 422) {
+          _this.errors = error.response.data.errors;
+        }
       });
     }
   }
@@ -38745,7 +38765,13 @@ var render = function() {
               _vm.$set(_vm.client, "name", $event.target.value)
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _vm.errors.name
+          ? _c("div", { staticClass: "text-red-600 text-sm" }, [
+              _vm._v(_vm._s(_vm.errors.name[0]))
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
@@ -38771,7 +38797,13 @@ var render = function() {
               _vm.$set(_vm.client, "email", $event.target.value)
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _vm.errors.email
+          ? _c("div", { staticClass: "text-red-600 text-sm" }, [
+              _vm._v(_vm._s(_vm.errors.email[0]))
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
@@ -38797,11 +38829,17 @@ var render = function() {
               _vm.$set(_vm.client, "phone", $event.target.value)
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _vm.errors.phone
+          ? _c("div", { staticClass: "text-red-600 text-sm" }, [
+              _vm._v(_vm._s(_vm.errors.phone[0]))
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "name" } }, [_vm._v("Address")]),
+        _c("label", { attrs: { for: "address" } }, [_vm._v("Address")]),
         _vm._v(" "),
         _c("input", {
           directives: [
@@ -38823,7 +38861,13 @@ var render = function() {
               _vm.$set(_vm.client, "address", $event.target.value)
             }
           }
-        })
+        }),
+        _vm._v(" "),
+        _vm.errors.address
+          ? _c("div", { staticClass: "text-red-600 text-sm" }, [
+              _vm._v(_vm._s(_vm.errors.address[0]))
+            ])
+          : _vm._e()
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "flex" }, [
@@ -38850,7 +38894,13 @@ var render = function() {
                 _vm.$set(_vm.client, "city", $event.target.value)
               }
             }
-          })
+          }),
+          _vm._v(" "),
+          _vm.errors.city
+            ? _c("div", { staticClass: "text-red-600 text-sm" }, [
+                _vm._v(_vm._s(_vm.errors.city[0]))
+              ])
+            : _vm._e()
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group flex-1" }, [
@@ -38876,7 +38926,13 @@ var render = function() {
                 _vm.$set(_vm.client, "postcode", $event.target.value)
               }
             }
-          })
+          }),
+          _vm._v(" "),
+          _vm.errors.postcode
+            ? _c("div", { staticClass: "text-red-600 text-sm" }, [
+                _vm._v(_vm._s(_vm.errors.postcode[0]))
+              ])
+            : _vm._e()
         ])
       ]),
       _vm._v(" "),
