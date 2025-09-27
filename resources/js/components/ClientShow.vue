@@ -31,13 +31,22 @@
 
             <div class="w-2/3">
                 <div>
-                    <button class="btn" :class="{'btn-primary': currentTab == 'bookings', 'btn-default': currentTab != 'bookings'}" @click="switchTab('bookings')">Bookings</button>
-                    <button class="btn" :class="{'btn-primary': currentTab == 'journals', 'btn-default': currentTab != 'journals'}" @click="switchTab('journals')">Journals</button>
+                    <button class="btn" :class="{'btn-primary': currentTab === 'bookings', 'btn-default': currentTab !== 'bookings'}" @click="switchTab('bookings')">Bookings</button>
+                    <button class="btn" :class="{'btn-primary': currentTab === 'journals', 'btn-default': currentTab !== 'journals'}" @click="switchTab('journals')">Journals</button>
                 </div>
 
                 <!-- Bookings -->
-                <div class="bg-white rounded p-4" v-if="currentTab == 'bookings'">
+                <div class="bg-white rounded p-4" v-if="currentTab === 'bookings'">
                     <h3 class="mb-3">List of client bookings</h3>
+
+                    <div class="mb-3">
+                        <label for="bookingFilter" class="mr-2">Show:</label>
+                        <select id="bookingFilter" v-model="bookingFilter" @change="onFilterChange" class="border rounded px-2 py-1">
+                            <option value="all">All bookings</option>
+                            <option value="future">Future bookings only</option>
+                            <option value="past">Past bookings only</option>
+                        </select>
+                    </div>
 
                     <template v-if="client.bookings && client.bookings.length > 0">
                         <table>
@@ -50,7 +59,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="booking in client.bookings" :key="booking.id">
-                                    <td>{{ booking.start }} - {{ booking.end }}</td>
+                                    <td class="whitespace-nowrap">{{ formatTime(booking) }}</td>
                                     <td>{{ booking.notes }}</td>
                                     <td>
                                         <button class="btn btn-danger btn-sm" @click="deleteBooking(booking)">Delete</button>
@@ -61,13 +70,13 @@
                     </template>
 
                     <template v-else>
-                        <p class="text-center">The client has no bookings.</p>
+                        <p class="text-center">No bookings match the selected filter.</p>
                     </template>
 
                 </div>
 
                 <!-- Journals -->
-                <div class="bg-white rounded p-4" v-if="currentTab == 'journals'">
+                <div class="bg-white rounded p-4" v-if="currentTab === 'journals'">
                     <h3 class="mb-3">List of client journals</h3>
 
                     <p>(BONUS) TODO: implement this feature</p>
@@ -79,15 +88,17 @@
 
 <script>
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 export default {
     name: 'ClientShow',
 
-    props: ['client'],
+    props: ['client', 'initialFilter'],
 
     data() {
         return {
             currentTab: 'bookings',
+            bookingFilter: this.initialFilter || 'all',
         }
     },
 
@@ -96,8 +107,27 @@ export default {
             this.currentTab = newTab;
         },
 
+        onFilterChange() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('filter', this.bookingFilter || 'all');
+            window.location.href = url.toString();
+        },
+
         deleteBooking(booking) {
             axios.delete(`/bookings/${booking.id}`);
+        },
+
+        formatTime(booking) {
+            if (!booking.start || !booking.end) return '';
+
+            const start = dayjs(booking.start).locale('en');
+            const end   = dayjs(booking.end).locale('en');
+
+            if (start.isSame(end, 'day')) {
+                return `${start.format('dddd DD MMMM YYYY, HH:mm')} to ${end.format('HH:mm')}`;
+            }
+
+            return `${start.format('dddd DD MMMM YYYY, HH:mm')} to ${end.format('dddd DD MMMM YYYY, HH:mm')}`;
         }
     }
 }
