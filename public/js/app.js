@@ -38118,8 +38118,8 @@ var render = function() {
             {
               staticClass: "btn",
               class: {
-                "btn-primary": _vm.currentTab == "bookings",
-                "btn-default": _vm.currentTab != "bookings"
+                "btn-primary": _vm.currentTab === "bookings",
+                "btn-default": _vm.currentTab !== "bookings"
               },
               on: {
                 click: function($event) {
@@ -38135,8 +38135,8 @@ var render = function() {
             {
               staticClass: "btn",
               class: {
-                "btn-primary": _vm.currentTab == "journals",
-                "btn-default": _vm.currentTab != "journals"
+                "btn-primary": _vm.currentTab === "journals",
+                "btn-default": _vm.currentTab !== "journals"
               },
               on: {
                 click: function($event) {
@@ -38148,7 +38148,7 @@ var render = function() {
           )
         ]),
         _vm._v(" "),
-        _vm.currentTab == "bookings"
+        _vm.currentTab === "bookings"
           ? _c(
               "div",
               { staticClass: "bg-white rounded p-4" },
@@ -38216,7 +38216,7 @@ var render = function() {
             )
           : _vm._e(),
         _vm._v(" "),
-        _vm.currentTab == "journals"
+        _vm.currentTab === "journals"
           ? _c("div", { staticClass: "bg-white rounded p-4" }, [
               _c("h3", { staticClass: "mb-3" }, [
                 _vm._v("List of client journals")
