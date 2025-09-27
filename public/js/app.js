@@ -2068,10 +2068,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2089,8 +2085,16 @@ __webpack_require__.r(__webpack_exports__);
     deleteBooking: function deleteBooking(booking) {
       axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/bookings/".concat(booking.id));
     },
-    formatTime: function formatTime(datetime) {
-      return dayjs__WEBPACK_IMPORTED_MODULE_1___default()(datetime).format('DD/MM/YYYY HH:mm');
+    formatTime: function formatTime(booking) {
+      if (!booking.start || !booking.end) return '';
+      var start = dayjs__WEBPACK_IMPORTED_MODULE_1___default()(booking.start).locale('en');
+      var end = dayjs__WEBPACK_IMPORTED_MODULE_1___default()(booking.end).locale('en');
+
+      if (start.isSame(end, 'day')) {
+        return "".concat(start.format('dddd DD MMMM YYYY, HH:mm'), " to ").concat(end.format('HH:mm'));
+      }
+
+      return "".concat(start.format('dddd DD MMMM YYYY, HH:mm'), " to ").concat(end.format('dddd DD MMMM YYYY, HH:mm'));
     }
   }
 });
@@ -38166,23 +38170,9 @@ var render = function() {
                           "tbody",
                           _vm._l(_vm.client.bookings, function(booking) {
                             return _c("tr", { key: booking.id }, [
-                              _c(
-                                "td",
-                                { staticClass: "flex items-center space-x-2" },
-                                [
-                                  _c("span", [
-                                    _vm._v(
-                                      _vm._s(_vm.formatTime(booking.start))
-                                    )
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("span", [_vm._v("-")]),
-                                  _vm._v(" "),
-                                  _c("span", [
-                                    _vm._v(_vm._s(_vm.formatTime(booking.end)))
-                                  ])
-                                ]
-                              ),
+                              _c("td", { staticClass: "whitespace-nowrap" }, [
+                                _vm._v(_vm._s(_vm.formatTime(booking)))
+                              ]),
                               _vm._v(" "),
                               _c("td", [_vm._v(_vm._s(booking.notes))]),
                               _vm._v(" "),

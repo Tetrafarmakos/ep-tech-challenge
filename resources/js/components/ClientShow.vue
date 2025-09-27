@@ -50,11 +50,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="booking in client.bookings" :key="booking.id">
-                                    <td class="flex items-center space-x-2">
-                                        <span>{{ formatTime(booking.start) }}</span>
-                                        <span>-</span>
-                                        <span>{{ formatTime(booking.end) }}</span>
-                                    </td>
+                                    <td class="whitespace-nowrap">{{ formatTime(booking) }}</td>
                                     <td>{{ booking.notes }}</td>
                                     <td>
                                         <button class="btn btn-danger btn-sm" @click="deleteBooking(booking)">Delete</button>
@@ -105,8 +101,17 @@ export default {
             axios.delete(`/bookings/${booking.id}`);
         },
 
-        formatTime(datetime) {
-            return dayjs(datetime).format('DD/MM/YYYY HH:mm');
+        formatTime(booking) {
+            if (!booking.start || !booking.end) return '';
+
+            const start = dayjs(booking.start).locale('en');
+            const end   = dayjs(booking.end).locale('en');
+
+            if (start.isSame(end, 'day')) {
+                return `${start.format('dddd DD MMMM YYYY, HH:mm')} to ${end.format('HH:mm')}`;
+            }
+
+            return `${start.format('dddd DD MMMM YYYY, HH:mm')} to ${end.format('dddd DD MMMM YYYY, HH:mm')}`;
         }
     }
 }
