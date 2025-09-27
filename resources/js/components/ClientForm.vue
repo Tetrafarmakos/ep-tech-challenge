@@ -69,17 +69,16 @@ export default {
     },
 
     methods: {
-        storeClient() {
+        async storeClient() {
             this.errors = {};
-            axios.post('/clients', this.client)
-                .then((data) => {
-                    window.location.href = data.data.url;
-                })
-                .catch(error => {
-                    if (error.response && error.response.status === 422) {
-                        this.errors = error.response.data.errors;
-                    }
-                });
+            try {
+                const response = await axios.post('/clients', this.client);
+                window.location.href = response.data.url;
+            } catch (error) {
+                if (error.response && error.response.status === 422) {
+                    this.errors = error.response.data.errors;
+                }
+            }
         }
     }
 }
