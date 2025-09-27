@@ -50,7 +50,11 @@
                             </thead>
                             <tbody>
                                 <tr v-for="booking in client.bookings" :key="booking.id">
-                                    <td>{{ booking.start }} - {{ booking.end }}</td>
+                                    <td class="flex items-center space-x-2">
+                                        <span>{{ formatTime(booking.start) }}</span>
+                                        <span>-</span>
+                                        <span>{{ formatTime(booking.end) }}</span>
+                                    </td>
                                     <td>{{ booking.notes }}</td>
                                     <td>
                                         <button class="btn btn-danger btn-sm" @click="deleteBooking(booking)">Delete</button>
@@ -79,6 +83,7 @@
 
 <script>
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 export default {
     name: 'ClientShow',
@@ -98,6 +103,10 @@ export default {
 
         deleteBooking(booking) {
             axios.delete(`/bookings/${booking.id}`);
+        },
+
+        formatTime(datetime) {
+            return dayjs(datetime).format('DD/MM/YYYY HH:mm');
         }
     }
 }
