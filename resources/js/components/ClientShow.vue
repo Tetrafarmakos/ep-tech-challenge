@@ -39,6 +39,15 @@
                 <div class="bg-white rounded p-4" v-if="currentTab === 'bookings'">
                     <h3 class="mb-3">List of client bookings</h3>
 
+                    <div class="mb-3">
+                        <label for="bookingFilter" class="mr-2">Show:</label>
+                        <select id="bookingFilter" v-model="bookingFilter" @change="onFilterChange" class="border rounded px-2 py-1">
+                            <option value="all">All bookings</option>
+                            <option value="future">Future bookings only</option>
+                            <option value="past">Past bookings only</option>
+                        </select>
+                    </div>
+
                     <template v-if="client.bookings && client.bookings.length > 0">
                         <table>
                             <thead>
@@ -61,7 +70,7 @@
                     </template>
 
                     <template v-else>
-                        <p class="text-center">The client has no bookings.</p>
+                        <p class="text-center">No bookings match the selected filter.</p>
                     </template>
 
                 </div>
@@ -84,17 +93,24 @@ import dayjs from 'dayjs';
 export default {
     name: 'ClientShow',
 
-    props: ['client'],
+    props: ['client', 'initialFilter'],
 
     data() {
         return {
             currentTab: 'bookings',
+            bookingFilter: this.initialFilter || 'all',
         }
     },
 
     methods: {
         switchTab(newTab) {
             this.currentTab = newTab;
+        },
+
+        onFilterChange() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('filter', this.bookingFilter || 'all');
+            window.location.href = url.toString();
         },
 
         deleteBooking(booking) {

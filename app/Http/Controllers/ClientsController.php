@@ -25,13 +25,23 @@ class ClientsController extends Controller
 
     public function show(Client $client)
     {
+        $filter = request('filter', 'all');
+
+        if (!in_array($filter, ['all', 'future', 'past'])) {
+            $filter = 'all';
+        }
+
         $client->load([
-            'bookings' => function ($query) {
-                $query->orderBy('created_at', 'desc');
+            'bookings' => function ($query) use ($filter) {
+                $query->timeFilter($filter)
+                      ->orderBy('created_at', 'desc');
             }
         ]);
 
-        return view('clients.show', ['client' => $client]);
+        return view('clients.show', [
+            'client' => $client,
+            'filter' => $filter,
+        ]);
     }
 
     public function store(StoreClientRequest $request)

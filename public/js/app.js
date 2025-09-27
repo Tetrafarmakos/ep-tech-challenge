@@ -1985,16 +1985,14 @@ __webpack_require__.r(__webpack_exports__);
         city: '',
         postcode: ''
       },
-      errors: {} // store backend validation errors
-
+      errors: {}
     };
   },
   methods: {
     storeClient: function storeClient() {
       var _this = this;
 
-      this.errors = {}; // reset errors
-
+      this.errors = {};
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/clients', this.client).then(function (data) {
         window.location.href = data.data.url;
       })["catch"](function (error) {
@@ -2100,19 +2098,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'ClientShow',
-  props: ['client'],
+  props: ['client', 'initialFilter'],
   data: function data() {
     return {
-      currentTab: 'bookings'
+      currentTab: 'bookings',
+      // Initialize from server-provided filter to reflect backend filtering
+      bookingFilter: this.initialFilter || 'all' // all | future | past
+
     };
   },
   methods: {
     switchTab: function switchTab(newTab) {
       this.currentTab = newTab;
+    },
+    onFilterChange: function onFilterChange() {
+      var url = new URL(window.location.href);
+      url.searchParams.set('filter', this.bookingFilter || 'all');
+      window.location.href = url.toString();
     },
     deleteBooking: function deleteBooking(booking) {
       axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/bookings/".concat(booking.id));
@@ -39072,6 +39087,61 @@ var render = function() {
                   _vm._v("List of client bookings")
                 ]),
                 _vm._v(" "),
+                _c("div", { staticClass: "mb-3" }, [
+                  _c(
+                    "label",
+                    { staticClass: "mr-2", attrs: { for: "bookingFilter" } },
+                    [_vm._v("Show:")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.bookingFilter,
+                          expression: "bookingFilter"
+                        }
+                      ],
+                      staticClass: "border rounded px-2 py-1",
+                      attrs: { id: "bookingFilter" },
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.bookingFilter = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          _vm.onFilterChange
+                        ]
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "all" } }, [
+                        _vm._v("All bookings")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "future" } }, [
+                        _vm._v("Future bookings only")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "past" } }, [
+                        _vm._v("Past bookings only")
+                      ])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
                 _vm.client.bookings && _vm.client.bookings.length > 0
                   ? [
                       _c("table", [
@@ -39109,7 +39179,7 @@ var render = function() {
                     ]
                   : [
                       _c("p", { staticClass: "text-center" }, [
-                        _vm._v("The client has no bookings.")
+                        _vm._v("No bookings match the selected filter.")
                       ])
                     ]
               ],
