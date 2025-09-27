@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +23,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware('auth')->group(function () {
-    Route::resource('clients', ClientController::class)
+    Route::resource('clients', 'ClientController')
         ->except(['edit', 'update']);
 
 //    Route::controller(JournalsController::class)
