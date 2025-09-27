@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Client;
 use App\Http\Requests\StoreClientRequest;
 
-class ClientsController extends Controller
+class ClientController extends Controller
 {
     public function __construct()
     {

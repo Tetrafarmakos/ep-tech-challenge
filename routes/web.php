@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ClientController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,14 +23,16 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['middleware' => 'auth', 'prefix' => 'clients'], function () {
-    Route::get('/', 'ClientsController@index')->name('clients.index');
-    Route::get('/create', 'ClientsController@create');
-    Route::post('/', 'ClientsController@store');
-    Route::get('/{client}', 'ClientsController@show');
-    Route::delete('/{client}', 'ClientsController@destroy');
+Route::middleware('auth')->group(function () {
+    Route::resource('clients', ClientController::class)
+        ->except(['edit', 'update']);
 
-    Route::get('/{client}/journals', 'JournalsController@index');
-    Route::post('/{client}/journals', 'JournalsController@store');
-    Route::delete('/{client}/journals/{journal}', 'JournalsController@destroy');
+//    Route::controller(JournalsController::class)
+//        ->prefix('clients/{client}/journals')
+//        ->name('clients.journals.')
+//        ->group(function () {
+//            Route::get('/', 'index')->name('index');
+//            Route::post('/', 'store')->name('store');
+//            Route::delete('/{journal}', 'destroy')->name('destroy');
+//        });
 });
