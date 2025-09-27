@@ -2115,9 +2115,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       currentTab: 'bookings',
-      // Initialize from server-provided filter to reflect backend filtering
-      bookingFilter: this.initialFilter || 'all' // all | future | past
-
+      bookingFilter: this.initialFilter || 'all'
     };
   },
   methods: {
