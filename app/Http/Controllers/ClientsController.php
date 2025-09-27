@@ -25,7 +25,11 @@ class ClientsController extends Controller
 
     public function show(Client $client)
     {
-        $client->load('bookings');
+        $client->load([
+            'bookings' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }
+        ]);
 
         return view('clients.show', ['client' => $client]);
     }
