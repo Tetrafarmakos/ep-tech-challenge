@@ -12,12 +12,12 @@ class ClientPolicy
 
     public function viewAny(User $user)
     {
-        return !is_null($user->id);
+        return true;
     }
 
     public function create(User $user)
     {
-        return !is_null($user->id);
+        return true;
     }
 
     public function view(User $user, Client $client)
